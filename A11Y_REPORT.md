@@ -111,6 +111,22 @@ npx lighthouse http://localhost:3005 --only-categories=accessibility --preset=de
 npx lighthouse http://localhost:3005 --only-categories=accessibility
 ```
 
+### Live deployment re-check
+
+Same suite run against the deployed static export (GitHub Pages, basePath `/northwind-site`):
+
+```
+https://shxmi03.github.io/northwind-site/ ....... HTTP 200
+Lighthouse accessibility — desktop ............. 100 (0 failing audits)
+Lighthouse accessibility — mobile .............. 100 (0 failing audits)
+axe-core / dark 1440 ........................... 0 violations, 34 passes
+axe-core / light 1440 .......................... 0 violations, 34 passes
+axe-core /privacy /terms /security (light) ..... 0 violations each
+Reflow 320/390/768/1440 ........................ 0 px overflow
+Reduced motion ................................. terminal static, 0 animations
+role=img nodes present ......................... 3 (terminal transcript, chart, equity curve)
+```
+
 ---
 
 ## 5. Open items / recommendations (not release blockers)
