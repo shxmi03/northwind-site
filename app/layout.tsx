@@ -17,7 +17,12 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `https://${BRAND.domain}`;
+/**
+ * Canonical origin used for OG/Twitter absolute URLs. Set NEXT_PUBLIC_SITE_URL
+ * once the custom domain is live; until then point at the Vercel deployment so
+ * social previews resolve instead of 404ing on the placeholder domain.
+ */
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://northwind-site-six.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
