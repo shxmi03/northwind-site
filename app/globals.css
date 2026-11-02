@@ -91,6 +91,16 @@
   color: #1d4ed8;
 }
 
+/* Panels that stay near-black in both themes (terminal + code mocks) keep
+   their own ink colours, so the light-theme floor above cannot darken text
+   on a #090d16 surface. Higher specificity than the rules above. */
+[data-theme="light"] .on-dark-panel .text-blue-300 {
+  color: #8ec5ff;
+}
+[data-theme="light"] .on-dark-panel .text-emerald-400 {
+  color: #34d399;
+}
+
 @theme inline {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;

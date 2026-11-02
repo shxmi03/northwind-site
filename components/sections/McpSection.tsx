@@ -1,27 +1,36 @@
 import { ArrowRight, Copy, Plug } from "lucide-react";
 import { BRAND } from "@/lib/brand";
-import { MCP_CARDS, MCP_CLIENTS } from "@/lib/content";
+import { MCP_CLIENTS } from "@/lib/content";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
+import { McpExplainer } from "@/components/sections/McpExplainer";
 
+/**
+ * Three bands, mirroring the reference's treatment of MCP as the product
+ * signature: hook -> compatible-client strip -> stage-driven chat explainer.
+ */
 export function McpSection() {
   return (
     <section
       id="mcp"
       aria-labelledby="mcp-heading"
-      className="relative scroll-mt-24 overflow-hidden border-y border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)]/40 px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24"
+      className="relative scroll-mt-24 overflow-hidden border-y border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)]/40"
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_50%_100%_at_50%_0%,rgba(0,82,255,0.16),transparent_70%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(ellipse_50%_100%_at_50%_0%,rgba(0,82,255,0.16),transparent_70%)]"
       />
-      <div className="relative mx-auto w-full max-w-7xl">
+
+      {/* Band 1 — hook */}
+      <div className="relative mx-auto w-full max-w-7xl px-4 pt-16 sm:px-6 sm:pt-20 lg:px-8 lg:pt-24">
         <SectionHeading
           eyebrow="Developer protocol"
           title={
-            <span id="mcp-heading">Integrate {BRAND.name} tools into your existing AI workflows.</span>
+            <span id="mcp-heading">
+              Your AI client runs the workspace. {BRAND.name} supplies the tools.
+            </span>
           }
-          description={`Connect ChatGPT, Claude, Cursor, Codex, Gemini, or custom client tools through ${BRAND.name}'s standardized MCP server endpoint.`}
+          description="One standardized MCP endpoint turns a chat request into a market-data query, a strategy build, a backtest, a staged order, or a monitoring rule — and returns the result inside the same conversation."
         />
 
         <div className="mx-auto mt-10 flex max-w-3xl flex-col items-stretch gap-3 rounded-xl border border-[var(--app-panel-border)] bg-[#090d16] p-3 sm:flex-row sm:items-center">
@@ -38,58 +47,47 @@ export function McpSection() {
           </span>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {MCP_CARDS.map((card) => {
-            const Icon = card.icon;
-            return (
-              <article
-                key={card.label}
-                className="group flex flex-col justify-between rounded-xl border border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] p-5 transition-all duration-200 hover:border-[var(--color-info)]/45 hover:bg-[var(--app-widget-inner-bg)] hover:shadow-[0_0_25px_rgba(59,130,246,0.14)]"
-              >
-                <div>
-                  <div className="mb-4 flex items-center justify-between">
-                    <Icon
-                      aria-hidden="true"
-                      className="h-5 w-5 text-[var(--color-info)] transition-transform group-hover:scale-110"
-                    />
-                    <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--text-secondary)]">
-                      mcp tool
-                    </span>
-                  </div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    {card.label}
-                  </p>
-                  <h3 className="mt-1.5 text-lg font-semibold text-[var(--text-primary)]">{card.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">{card.output}</p>
-                </div>
+        <p className="mt-4 text-center font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--text-secondary)]">
+          nine tools · five stages · one endpoint
+        </p>
+      </div>
 
-                <div className="mt-4 rounded-lg border border-[var(--app-panel-border)] bg-[#090d16] p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-400">prompt</p>
-                  <p className="mt-1 font-mono text-[11px] leading-relaxed text-[#8ec5ff]">
-                    &ldquo;{card.prompt}&rdquo;
-                  </p>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-
-        <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
-          <ul className="flex flex-wrap items-center gap-2" aria-label="Compatible AI clients">
+      {/* Band 2 — compatible clients (neutral text labels, no third-party assets) */}
+      <div className="relative mt-14 border-y border-[var(--app-panel-border)] bg-[var(--app-widget-inner-bg)]/40 py-8">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="text-center font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--text-secondary)]">
+            connects to the AI client you already work in
+          </p>
+          <ul className="mt-4 flex flex-wrap items-center justify-center gap-2" aria-label="Compatible AI clients">
             {MCP_CLIENTS.map((client) => (
               <li
                 key={client}
-                className="rounded-full border border-[var(--app-panel-border)] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-secondary)]"
+                className="rounded-full border border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--text-secondary)]"
               >
                 {client}
               </li>
             ))}
           </ul>
-          <Button href="#pricing" variant="outline" size="md" className="w-full sm:w-auto">
-            View MCP technical docs
+        </div>
+      </div>
+
+      {/* Band 3 — stage-driven chat explainer */}
+      <div className="relative mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+        <McpExplainer />
+
+        <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <Button href="#pricing" size="md" className="w-full justify-center sm:w-auto">
+            Connect your client
             <ArrowRight aria-hidden="true" className="h-4 w-4" />
           </Button>
+          <Button href="#faq" variant="outline" size="md" className="w-full justify-center sm:w-auto">
+            MCP questions
+          </Button>
         </div>
+
+        <p className="mt-6 text-center font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--text-secondary)]">
+          Sample conversation · synthetic market data · no live brokerage connection
+        </p>
       </div>
     </section>
   );

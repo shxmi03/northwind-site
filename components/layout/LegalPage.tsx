@@ -10,11 +10,17 @@ export function LegalPage({
   title,
   intro,
   updated,
+  eyebrow,
+  meta,
   children,
 }: {
   title: string;
   intro: string;
   updated: string;
+  /** Defaults to "<brand> · legal" — the changelog overrides it. */
+  eyebrow?: string;
+  /** Defaults to the counsel-review placeholder line. */
+  meta?: string;
   children: ReactNode;
 }) {
   return (
@@ -43,14 +49,14 @@ export function LegalPage({
       <main id="main-content" className="flex-1 px-4 py-14 sm:px-6 lg:px-8">
         <article className="mx-auto w-full max-w-3xl">
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--color-info)]">
-            {BRAND.name} · legal
+            {eyebrow ?? `${BRAND.name} · legal`}
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl">
             {title}
           </h1>
           <p className="mt-4 text-base leading-relaxed text-[var(--text-secondary)]">{intro}</p>
           <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-            Last updated {updated} · placeholder pending counsel review
+            {meta ?? `Last updated ${updated} · placeholder pending counsel review`}
           </p>
 
           <div className="mt-10 space-y-8">{children}</div>

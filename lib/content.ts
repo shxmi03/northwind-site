@@ -1,12 +1,8 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  Activity,
-  BarChart3,
-  Bell,
   Binary,
   Bot,
   Braces,
-  CalendarClock,
   Code2,
   Compass,
   Database,
@@ -17,9 +13,7 @@ import {
   Radar,
   Repeat,
   ScanSearch,
-  ShieldCheck,
   SlidersHorizontal,
-  Wallet,
 } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
@@ -28,12 +22,23 @@ import {
 
 export type NavLink = { label: string; href: string };
 
+/** Primary links, in the reference order: Features · MCP · Pricing · Brokers. */
 export const NAV_LINKS: NavLink[] = [
   { label: "Features", href: "#features" },
-  { label: "MCP Endpoint", href: "#mcp" },
-  { label: "Explore Strategies", href: "#explore" },
-  { label: "Broker Connectivity", href: "#brokers" },
+  { label: "MCP", href: "#mcp" },
   { label: "Pricing", href: "#pricing" },
+  { label: "Brokers", href: "#brokers" },
+];
+
+/**
+ * Resources dropdown (BRIEF §1 / COPY_SPEC §1). Every target resolves: three
+ * in-page sections plus the changelog route, so no link 404s on GitHub Pages.
+ */
+export const NAV_RESOURCES: NavLink[] = [
+  { label: "Documentation", href: "#features" },
+  { label: "API Reference", href: "#mcp" },
+  { label: "Changelog", href: "/changelog" },
+  { label: "FAQ", href: "#faq" },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -169,80 +174,227 @@ export const FEATURES: FeaturePillar[] = [
 ];
 
 /* -------------------------------------------------------------------------- */
-/*  Section 5 — MCP capability cards                                          */
+/*  Section 5 — MCP stage explainer                                           */
 /* -------------------------------------------------------------------------- */
 
-export type McpCard = {
+/** A metric tile the result cards render as label + value. */
+export type McpStat = {
   label: string;
-  title: string;
-  prompt: string;
-  output: string;
-  icon: LucideIcon;
+  value: string;
+  tone?: "up" | "down" | "warn" | "neutral";
 };
 
-export const MCP_CARDS: McpCard[] = [
+/**
+ * Result-card payloads. Each variant maps to one chat step of the reference's
+ * prompt -> answer -> result pattern, rendered by `McpResultCard`.
+ * All figures are synthetic demonstration data.
+ */
+export type McpResult =
+  | {
+      kind: "dataset";
+      tool: string;
+      caption: string;
+      columns: string[];
+      rows: string[][];
+      stats: McpStat[];
+      note: string;
+    }
+  | {
+      kind: "code";
+      tool: string;
+      file: string;
+      lines: string[];
+      checks: string[];
+      note: string;
+    }
+  | {
+      kind: "backtest";
+      tool: string;
+      stats: McpStat[];
+      curve: number[];
+      trades: { side: string; entry: string; exit: string; pnl: string }[];
+      note: string;
+    }
+  | {
+      kind: "order";
+      tool: string;
+      account: McpStat[];
+      ticket: { label: string; value: string }[];
+      note: string;
+    }
+  | {
+      kind: "monitor";
+      tool: string;
+      stats: McpStat[];
+      exposures: { label: string; pct: number }[];
+      events: { time: string; text: string; tone: "up" | "warn" | "down" | "neutral" }[];
+      note: string;
+    };
+
+export type McpStage = {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  /** Exact endpoint path, shown in the result-card header instead of a generic chip. */
+  tools: string[];
+  prompt: string;
+  answer: string;
+  chips: string[];
+  result: McpResult;
+};
+
+/**
+ * Five stages replace the previous nine equal-weight cards. The nine tools are
+ * mapped in: Research = market data + indicators, Build = logic construction,
+ * Backtest = simulation, Trade = account status + order ticket, Monitor = risk
+ * audit + alerts + events.
+ */
+export const MCP_STAGES: McpStage[] = [
   {
-    label: "01. Market Data Query",
-    title: "Research data",
-    prompt: "Pull 5-minute OHLCV data for NVDA over the past 30 days.",
-    output: "Returns a clean JSON dataset with volume and price metrics.",
+    id: "research",
+    label: "Research",
     icon: Database,
+    tools: ["market_data.query", "indicators.overlay"],
+    prompt:
+      "Pull 5-minute NVDA bars for the last 30 days and flag every touch of the 20-period Bollinger band.",
+    answer:
+      "Fetched 2,340 five-minute bars and overlaid a 20-period band at 2σ. 14 bars touched the band, 3 of them inside the opening half hour. The dataset is cached for this session, so follow-up calls are free.",
+    chips: ["NVDA", "5-minute", "2,340 bars"],
+    result: {
+      kind: "dataset",
+      tool: "market_data.query · indicators.overlay",
+      caption: "NVDA · 5m closes around the first band touch · bar 1 of 2,340",
+      columns: ["time", "close", "volume"],
+      rows: [
+        ["09:30", "118.42", "1.24M"],
+        ["09:35", "118.06", "0.83M"],
+        ["09:40", "117.64", "1.07M"],
+        ["09:45", "118.11", "0.91M"],
+        ["09:50", "118.68", "0.77M"],
+      ],
+      stats: [
+        { label: "band touches", value: "14" },
+        { label: "session range", value: "116.90–121.30" },
+        { label: "last close", value: "118.68" },
+      ],
+      note: "Dataset cached for this workspace session · 3 touches inside the first 30 minutes",
+    },
   },
   {
-    label: "02. Indicator Overlay",
-    title: "Technical indicators",
-    prompt: "Calculate 20-day Bollinger Bands and MACD for TSLA.",
-    output: "Returns indicator series mapped against price timestamps.",
-    icon: BarChart3,
-  },
-  {
-    label: "03. Logic Construction",
-    title: "Strategy generation",
-    prompt: "Generate a momentum strategy combining VWAP and 50-day EMA.",
-    output: "Outputs structured strategy code with editable entry and exit variables.",
+    id: "build",
+    label: "Build",
     icon: Braces,
+    tools: ["strategy.generate", "strategy.audit"],
+    prompt:
+      "Turn that into a strategy: enter on a lower-band touch while price is above the 200-day average, exit at the mid-band.",
+    answer:
+      "Built a rule-based strategy with entry, exit and risk blocks from the research step. Static audit passed with 0 blocking findings: no look-ahead reads, position size capped at 4% of equity, ATR stop at 2.5×.",
+    chips: ["entry", "exit", "risk"],
+    result: {
+      kind: "code",
+      tool: "strategy.generate · strategy.audit",
+      file: "bollinger-touch.ts",
+      lines: [
+        "export const bollingerTouch = defineStrategy({",
+        '  symbol: "NVDA",',
+        '  timeframe: "5m",',
+        "  filter: (bar) => bar.close > bar.sma(200),",
+        "  entry: (bar) => bar.low <= bar.bbands(20, 2).lower,",
+        "  exit: (bar) => bar.close >= bar.bbands(20, 2).middle,",
+        "  risk: { sizePct: 0.04, stopAtr: 2.5 },",
+        "});",
+      ],
+      checks: ["no look-ahead reads", "position cap 4%", "stop-loss defined"],
+      note: "Editable in the workspace editor · every parameter is addressable from the chat",
+    },
   },
   {
-    label: "04. Simulation Trigger",
-    title: "Backtest execution",
-    prompt: "Run backtest for Strategy #402 across 2022-2025 SPY historical data.",
-    output: "Generates performance breakdown, win-loss ratio, and drawdown curve.",
-    icon: Activity,
+    id: "backtest",
+    label: "Backtest",
+    icon: LineChart,
+    tools: ["backtest.run"],
+    prompt:
+      "Run it on NVDA daily history from 2019 to 2025 with 0.01% commission and one tick of slippage.",
+    answer:
+      "Simulation finished in 1.2 s over 1,760 daily bars. Net return +18.4% against a +7.1% benchmark, maximum drawdown −4.1%, Sharpe 1.82 across 142 trades.",
+    chips: ["1,760 bars", "0.01% fee", "1 tick slippage"],
+    result: {
+      kind: "backtest",
+      tool: "backtest.run",
+      stats: [
+        { label: "net return", value: "+18.4%", tone: "up" },
+        { label: "max drawdown", value: "−4.1%", tone: "down" },
+        { label: "sharpe", value: "1.82" },
+        { label: "win rate", value: "61.3%" },
+      ],
+      curve: [10, 16, 14, 24, 22, 31, 29, 40, 38, 50, 47, 59, 56, 68, 64, 76, 72, 84, 80, 92],
+      trades: [
+        { side: "long", entry: "118.24", exit: "121.90", pnl: "+2.9%" },
+        { side: "long", entry: "122.05", exit: "120.44", pnl: "−1.3%" },
+        { side: "short", entry: "131.10", exit: "127.85", pnl: "+2.4%" },
+      ],
+      note: "Synthetic history · equity curve and trades are illustrative, not a performance claim",
+    },
   },
   {
-    label: "05. Account Status",
-    title: "Broker interface",
-    prompt: "Fetch current open positions and available cash margin.",
-    output: "Displays the authenticated brokerage account summary.",
-    icon: Wallet,
-  },
-  {
-    label: "06. Order Ticket Setup",
-    title: "Order placement",
-    prompt: "Draft a limit buy order for 50 shares of AMD at $110.00.",
-    output: "Creates a staged order ticket that requires manual approval.",
+    id: "trade",
+    label: "Trade",
     icon: ListOrdered,
+    tools: ["account.status", "order.stage"],
+    prompt: "Check the paper account and draft the first entry ticket for review.",
+    answer:
+      "Paper account holds $24,180 cash with no open positions. Staged a limit buy for 50 NVDA at $118.40, valued at $5,920. Nothing is submitted until you approve the ticket.",
+    chips: ["paper account", "awaiting approval"],
+    result: {
+      kind: "order",
+      tool: "account.status · order.stage",
+      account: [
+        { label: "equity", value: "$24,180" },
+        { label: "cash", value: "$24,180" },
+        { label: "open positions", value: "0" },
+      ],
+      ticket: [
+        { label: "side", value: "buy" },
+        { label: "quantity", value: "50 shares" },
+        { label: "order type", value: "limit" },
+        { label: "limit price", value: "$118.40" },
+        { label: "time in force", value: "day" },
+        { label: "estimated value", value: "$5,920" },
+      ],
+      note: "Staged only · the workspace never routes an order without an explicit approval",
+    },
   },
   {
-    label: "07. Risk Audit",
-    title: "Portfolio risk",
-    prompt: "Evaluate portfolio beta and sector concentration.",
-    output: "Provides an exposure heatmap and concentration analysis.",
-    icon: ShieldCheck,
-  },
-  {
-    label: "08. Condition Monitor",
-    title: "Automated alerts",
-    prompt: "Set an alert trigger if QQQ breaks below its 200-day moving average.",
-    output: "Registers an active monitoring rule with webhook notification.",
-    icon: Bell,
-  },
-  {
-    label: "09. Market Events",
-    title: "Event feed",
-    prompt: "List upcoming earnings reports for my portfolio watchlists.",
-    output: "Delivers a calendar feed with earnings dates and volatility metrics.",
-    icon: CalendarClock,
+    id: "monitor",
+    label: "Monitor",
+    icon: Radar,
+    tools: ["risk.audit", "alerts.create", "events.list"],
+    prompt:
+      "Watch it from here: alert me if QQQ breaks its 200-day average, and audit concentration every week.",
+    answer:
+      "Registered 2 monitoring rules and a weekly risk audit. Portfolio beta 1.08, technology weight 34%, one-week VaR −2.6%. Alerts route to webhook and email, and every trigger is written to the activity feed.",
+    chips: ["2 rules", "webhook + email"],
+    result: {
+      kind: "monitor",
+      tool: "risk.audit · alerts.create · events.list",
+      stats: [
+        { label: "portfolio beta", value: "1.08" },
+        { label: "tech weight", value: "34%", tone: "warn" },
+        { label: "1-week VaR", value: "−2.6%", tone: "down" },
+      ],
+      exposures: [
+        { label: "technology", pct: 34 },
+        { label: "semiconductors", pct: 21 },
+        { label: "crypto", pct: 9 },
+        { label: "cash", pct: 36 },
+      ],
+      events: [
+        { time: "09:31", text: "rule armed · QQQ below 200-day average", tone: "up" },
+        { time: "10:02", text: "alert delivered · webhook 200 OK", tone: "neutral" },
+        { time: "10:15", text: "concentration warning · technology 34%", tone: "warn" },
+      ],
+      note: "Synthetic portfolio · exposure and risk figures are illustrative",
+    },
   },
 ];
 
@@ -404,7 +556,7 @@ export const PRICING_BULLETS = [
   "Unlimited saved and versioned strategies",
   "Extended history up to 50,000 bars per simulation",
   "Live-price paper trading environments",
-  "Broker API connections for positions and order staging",
+  "Broker API connections for positions and order staging (rolling out by venue)",
   "Custom price and condition alerts (webhook + dashboard)",
   "Full MCP server access for ChatGPT, Claude, Cursor and custom clients",
 ] as const;

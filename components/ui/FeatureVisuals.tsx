@@ -96,7 +96,7 @@ const CODE_LINES = [
 export function CodeMock() {
   return (
     <Frame label="editor · strategy.ts" image="/assets/images/feature-2.webp">
-      <div className="rounded-lg border border-[var(--app-panel-border)] bg-[#090d16] p-3">
+      <div className="on-dark-panel rounded-lg border border-[var(--app-panel-border)] bg-[#090d16] p-3">
         <div className="mb-2 flex items-center justify-between">
           <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
             strategy.ts

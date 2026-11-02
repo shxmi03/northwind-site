@@ -1,19 +1,54 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Menu, X } from "lucide-react";
+import Link from "next/link";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { BRAND } from "@/lib/brand";
-import { NAV_LINKS } from "@/lib/content";
+import { NAV_LINKS, NAV_RESOURCES } from "@/lib/content";
 import { Button } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { cn } from "@/lib/utils";
 
+const navLinkClass =
+  "inline-flex h-9 items-center rounded-lg px-3 text-sm font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-info)]";
+
+/** Internal routes need next/link so the GitHub Pages basePath is applied. */
+function MenuItem({
+  href,
+  label,
+  className,
+  onNavigate,
+}: {
+  href: string;
+  label: string;
+  className?: string;
+  onNavigate?: () => void;
+}) {
+  if (href.startsWith("/")) {
+    return (
+      <Link href={href} onClick={onNavigate} className={className}>
+        {label}
+      </Link>
+    );
+  }
+  return (
+    <a href={href} onClick={onNavigate} className={className}>
+      {label}
+    </a>
+  );
+}
+
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [resourcesOpen, setResourcesOpen] = useState(false);
+  const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const resourcesRef = useRef<HTMLLIElement>(null);
+  const resourcesTriggerRef = useRef<HTMLButtonElement>(null);
+  const resourcesPanelRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -21,6 +56,29 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  /* Resources dropdown: Escape closes and returns focus, outside click closes. */
+  useEffect(() => {
+    if (!resourcesOpen) return;
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (!resourcesRef.current?.contains(event.target as Node)) setResourcesOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.stopPropagation();
+        setResourcesOpen(false);
+        resourcesTriggerRef.current?.focus();
+      }
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [resourcesOpen]);
 
   useEffect(() => {
     if (!open) return;
@@ -71,6 +129,12 @@ export function Navbar() {
     };
   }, [open]);
 
+  const focusResourceItem = (position: "first" | "last") => {
+    const items = resourcesPanelRef.current?.querySelectorAll<HTMLElement>("a[href]");
+    if (!items || items.length === 0) return;
+    (position === "first" ? items[0] : items[items.length - 1]).focus();
+  };
+
   return (
     <header
       className={cn(
@@ -94,14 +158,57 @@ export function Navbar() {
         <ul className="hidden items-center gap-1 lg:flex">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
-              <a
-                href={link.href}
-                className="inline-flex h-9 items-center rounded-lg px-3 text-sm font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-info)]"
-              >
+              <a href={link.href} className={navLinkClass}>
                 {link.label}
               </a>
             </li>
           ))}
+
+          <li ref={resourcesRef} className="relative">
+            <button
+              ref={resourcesTriggerRef}
+              type="button"
+              aria-expanded={resourcesOpen}
+              aria-controls="nav-resources"
+              aria-haspopup="true"
+              onClick={() => setResourcesOpen((value) => !value)}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+                  event.preventDefault();
+                  setResourcesOpen(true);
+                  window.requestAnimationFrame(() =>
+                    focusResourceItem(event.key === "ArrowDown" ? "first" : "last"),
+                  );
+                }
+              }}
+              className={cn(navLinkClass, "gap-1.5", resourcesOpen && "text-[var(--text-primary)]")}
+            >
+              Resources
+              <ChevronDown
+                aria-hidden="true"
+                className={cn("h-3.5 w-3.5 transition-transform", resourcesOpen && "rotate-180")}
+              />
+            </button>
+
+            <ul
+              id="nav-resources"
+              ref={resourcesPanelRef}
+              hidden={!resourcesOpen}
+              aria-label="Resources"
+              className="absolute left-1/2 top-full z-50 mt-2 w-56 -translate-x-1/2 rounded-xl border border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] p-1.5 shadow-2xl shadow-black/40"
+            >
+              {NAV_RESOURCES.map((link) => (
+                <li key={link.label}>
+                  <MenuItem
+                    href={link.href}
+                    label={link.label}
+                    onNavigate={() => setResourcesOpen(false)}
+                    className="flex min-h-[40px] items-center rounded-lg px-3 text-sm text-[var(--text-secondary)] transition-colors hover:bg-[var(--app-widget-inner-bg)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-info)]"
+                  />
+                </li>
+              ))}
+            </ul>
+          </li>
         </ul>
 
         <div className="flex items-center gap-2">
@@ -134,7 +241,7 @@ export function Navbar() {
         id="mobile-nav"
         ref={drawerRef}
         hidden={!open}
-        className="border-t border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] px-4 pb-6 pt-3 lg:hidden"
+        className="max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] px-4 pb-6 pt-3 lg:hidden"
       >
         <ul className="flex flex-col gap-1">
           {NAV_LINKS.map((link) => (
@@ -148,7 +255,42 @@ export function Navbar() {
               </a>
             </li>
           ))}
+
+          <li>
+            <button
+              type="button"
+              aria-expanded={mobileResourcesOpen}
+              aria-controls="mobile-resources"
+              onClick={() => setMobileResourcesOpen((value) => !value)}
+              className="flex min-h-[44px] w-full items-center justify-between rounded-lg px-3 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--app-widget-inner-bg)] hover:text-[var(--text-primary)]"
+            >
+              Resources
+              <ChevronDown
+                aria-hidden="true"
+                className={cn(
+                  "h-4 w-4 transition-transform",
+                  mobileResourcesOpen && "rotate-180",
+                )}
+              />
+            </button>
+            <ul id="mobile-resources" hidden={!mobileResourcesOpen} className="mt-1 flex flex-col gap-1 pl-3">
+              {NAV_RESOURCES.map((link) => (
+                <li key={link.label}>
+                  <MenuItem
+                    href={link.href}
+                    label={link.label}
+                    onNavigate={() => {
+                      setOpen(false);
+                      setMobileResourcesOpen(false);
+                    }}
+                    className="flex min-h-[44px] items-center rounded-lg border-l border-[var(--app-panel-border)] px-3 text-sm text-[var(--text-secondary)] hover:bg-[var(--app-widget-inner-bg)] hover:text-[var(--text-primary)]"
+                  />
+                </li>
+              ))}
+            </ul>
+          </li>
         </ul>
+
         <div className="mt-4 flex flex-col gap-2">
           <Button href="#pricing" size="md" className="w-full justify-center">
             Get started

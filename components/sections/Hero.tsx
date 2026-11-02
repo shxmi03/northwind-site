@@ -12,9 +12,11 @@ export function Hero() {
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
         <img
           src={asset("/assets/images/hero-visual.webp")}
+          srcSet={`${asset("/assets/images/hero-visual-800.webp")} 800w, ${asset("/assets/images/hero-visual.webp")} 1280w`}
+          sizes="100vw"
           alt=""
           width={1280}
-          height={720}
+          height={768}
           fetchPriority="high"
           className="h-full w-full object-cover opacity-30 [mask-image:radial-gradient(ellipse_65%_55%_at_50%_0%,#000_15%,transparent_85%)]"
         />

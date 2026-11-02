@@ -19,7 +19,7 @@ export function Features() {
           description="Construct, evaluate, refine, and deploy quantitative trading logic within a single workspace."
         />
 
-        <ol className="mt-14 space-y-16 sm:mt-16 sm:space-y-20">
+        <ol className="mt-14 space-y-16 sm:mt-16 sm:space-y-24 lg:space-y-28">
           {FEATURES.map((feature, index) => {
             const Visual = FEATURE_VISUALS[feature.visual];
             const reversed = index % 2 === 1;
@@ -28,7 +28,7 @@ export function Features() {
             return (
               <li
                 key={feature.index}
-                className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-14"
+                className="grid grid-cols-1 items-center gap-8 py-4 sm:py-6 lg:grid-cols-2 lg:gap-14"
               >
                 <div className={cn(reversed && "lg:order-2")}>
                   <span className="inline-flex items-center gap-2 rounded-md border border-[var(--color-info)]/25 bg-[var(--color-info)]/10 px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-info)]">

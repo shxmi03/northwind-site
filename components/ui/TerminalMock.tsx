@@ -114,52 +114,59 @@ export function TerminalMock({ className }: { className?: string }) {
         className,
       )}
     >
-      <div
-        role="tablist"
-        aria-label="Workspace panels"
-        className="scroll-slim flex overflow-x-auto border-b border-[var(--app-panel-border)] bg-[#0b1019]"
-      >
-        {HERO_TABS.map((item, index) => {
-          const selected = index === activeTab;
-          return (
-            <button
-              key={item.id}
-              role="tab"
-              id={`hero-tab-${item.id}`}
-              aria-selected={selected}
-              aria-controls="hero-tabpanel"
-              tabIndex={selected ? 0 : -1}
-              onClick={() => setActiveTab(index)}
-              onKeyDown={(event) => {
-                if (event.key === "ArrowRight") {
-                  event.preventDefault();
-                  focusTab((index + 1) % HERO_TABS.length);
-                }
-                if (event.key === "ArrowLeft") {
-                  event.preventDefault();
-                  focusTab((index - 1 + HERO_TABS.length) % HERO_TABS.length);
-                }
-                if (event.key === "Home") {
-                  event.preventDefault();
-                  focusTab(0);
-                }
-                if (event.key === "End") {
-                  event.preventDefault();
-                  focusTab(HERO_TABS.length - 1);
-                }
-              }}
-              className={cn(
-                "shrink-0 border-b-2 px-4 py-3 font-mono text-[11px] uppercase tracking-wide transition-colors",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-info)]",
-                selected
-                  ? "border-[var(--color-info)] bg-[#131822] text-white"
-                  : "border-transparent text-slate-400 hover:text-white",
-              )}
-            >
-              {item.label}
-            </button>
-          );
-        })}
+      <div className="relative">
+        <div
+          role="tablist"
+          aria-label="Workspace panels"
+          className="scroll-slim flex overflow-x-auto border-b border-[var(--app-panel-border)] bg-[#0b1019]"
+        >
+          {HERO_TABS.map((item, index) => {
+            const selected = index === activeTab;
+            return (
+              <button
+                key={item.id}
+                role="tab"
+                id={`hero-tab-${item.id}`}
+                aria-selected={selected}
+                aria-controls="hero-tabpanel"
+                tabIndex={selected ? 0 : -1}
+                onClick={() => setActiveTab(index)}
+                onKeyDown={(event) => {
+                  if (event.key === "ArrowRight") {
+                    event.preventDefault();
+                    focusTab((index + 1) % HERO_TABS.length);
+                  }
+                  if (event.key === "ArrowLeft") {
+                    event.preventDefault();
+                    focusTab((index - 1 + HERO_TABS.length) % HERO_TABS.length);
+                  }
+                  if (event.key === "Home") {
+                    event.preventDefault();
+                    focusTab(0);
+                  }
+                  if (event.key === "End") {
+                    event.preventDefault();
+                    focusTab(HERO_TABS.length - 1);
+                  }
+                }}
+                className={cn(
+                  "shrink-0 border-b-2 px-4 py-3 font-mono text-[11px] uppercase tracking-wide transition-colors",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-info)]",
+                  selected
+                    ? "border-[var(--color-info)] bg-[#131822] text-white"
+                    : "border-transparent text-slate-400 hover:text-white",
+                )}
+              >
+                {item.label}
+              </button>
+            );
+          })}
+        </div>
+        {/* Fading edge: 630 px of tabs sit in a 322 px strip on phones (R-1). */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-[#0b1019] via-[#0b1019]/80 to-transparent sm:hidden"
+        />
       </div>
 
       <div
