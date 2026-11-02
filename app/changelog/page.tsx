@@ -9,6 +9,15 @@ export const metadata: Metadata = {
 
 const ENTRIES = [
   {
+    version: "0.4",
+    date: "2 November 2026",
+    summary: "Mobile hero image weight cut, broker claims tightened to match planned status.",
+    items: [
+      "Hero backdrop now serves an 800 px variant below desktop widths, so phones no longer download the 1280 px file on the critical path.",
+      "Pricing bullet, subscription FAQ and the brokerage FAQ state plainly that no venue integration is live yet and that paper trading is the only available path today.",
+    ],
+  },
+  {
     version: "0.3",
     date: "2 November 2026",
     summary: "MCP section rebuilt as a stage-driven chat explainer; Resources menu added to the nav.",

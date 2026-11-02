@@ -556,7 +556,7 @@ export const PRICING_BULLETS = [
   "Unlimited saved and versioned strategies",
   "Extended history up to 50,000 bars per simulation",
   "Live-price paper trading environments",
-  "Broker API connections for positions and order staging (rolling out by venue)",
+  "Broker connection framework for positions and order staging — venue integrations planned, none live yet",
   "Custom price and condition alerts (webhook + dashboard)",
   "Full MCP server access for ChatGPT, Claude, Cursor and custom clients",
 ] as const;
@@ -586,7 +586,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     question: "What capabilities are included in the subscription?",
     answer:
-      "The subscription provides full access to market research tools, backtesting engines, saved strategy storage, historical data feeds, paper trading, alert monitors, broker connectivity, and MCP integration.",
+      "The subscription provides full access to market research tools, backtesting engines, saved strategy storage, historical data feeds, paper trading, alert monitors, the broker connection framework, and MCP integration.",
   },
   {
     question: "Can I test strategies without risking real capital?",
@@ -601,7 +601,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     question: "Which brokerage accounts can be connected?",
     answer:
-      "Northwind targets major brokerage platforms through standard API protocols. Supported partners and setup instructions are documented on the broker connectivity section of this page.",
+      "Northwind targets major brokerage platforms through standard API protocols, but no venue integration is live yet: paper trading is available today and each connection ships as its integration completes. The broker section of this page lists venues by category and status.",
   },
   {
     question: "How can I manage or cancel my subscription?",
