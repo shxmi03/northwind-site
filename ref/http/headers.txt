@@ -1,0 +1,16 @@
+HTTP/2 200 
+age: 0
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+content-encoding: br
+content-type: text/html; charset=utf-8
+date: Mon, 02 Nov 2026 14:21:22 GMT
+link: </>; rel=preconnect; crossorigin="", </_next/static/immutable/chunks/0gpb3_qpvs-qn.css>; rel=preload; as="style", </_next/static/immutable/chunks/37rwhfdj91-r7.css>; rel=preload; as="style", </_next/static/immutable/chunks/2wbnbq5-tuov0.css>; rel=preload; as="style"
+server: Vercel
+set-cookie: astral_vid=06256187-c37a-4b59-bf30-cee768d3c5f6; Path=/; Expires=Sat, 01 May 2027 14:21:20 GMT; Max-Age=15552000; Secure; SameSite=lax
+strict-transport-security: max-age=63072000
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+x-matched-path: /
+x-powered-by: Next.js
+x-vercel-cache: MISS
+x-vercel-id: fra1::iad1::6wzx7-1793629280881-133f5d1a25c7
+
