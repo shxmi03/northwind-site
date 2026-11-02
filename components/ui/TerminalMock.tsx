@@ -5,11 +5,11 @@ import { HERO_TABS, type HeroTab } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
 const KIND_STYLES: Record<string, string> = {
-  prompt: "text-[var(--text-primary)]",
-  out: "text-slate-400",
-  ok: "text-emerald-400",
-  code: "text-[var(--color-info)]",
-  meta: "text-[var(--text-secondary)]",
+  prompt: "text-slate-100",
+  out: "text-slate-300",
+  ok: "text-[#34d399]",
+  code: "text-[#38bdf8]",
+  meta: "text-slate-400",
 };
 
 const PROMPT_PREFIX: Record<string, string> = {
@@ -37,7 +37,7 @@ function useReducedMotion(): boolean {
 }
 
 /** Typewriter for the prompt, then one output line every 380 ms. */
-function Transcript({ lines }: { lines: HeroTab["lines"] }) {
+function Transcript({ lines, label }: { lines: HeroTab["lines"]; label: string }) {
   const reduced = useReducedMotion();
   const [typedCount, setTypedCount] = useState(0);
   const [revealed, setRevealed] = useState(0);
@@ -73,6 +73,8 @@ function Transcript({ lines }: { lines: HeroTab["lines"] }) {
   return (
     <div
       ref={panelRef}
+      role="img"
+      aria-label={label}
       className="scroll-slim h-[188px] overflow-y-auto font-mono text-[11px] leading-relaxed sm:text-xs"
     >
       {lines.slice(0, visible).map((line, index) => {
@@ -82,7 +84,7 @@ function Transcript({ lines }: { lines: HeroTab["lines"] }) {
             key={index}
             className={cn("flex gap-2 whitespace-pre-wrap", KIND_STYLES[line.kind])}
           >
-            <span aria-hidden="true" className="select-none text-slate-600">
+            <span aria-hidden="true" className="select-none text-slate-500">
               {PROMPT_PREFIX[line.kind]}
             </span>
             <span>{isPrompt ? shownPrompt : line.text}</span>
@@ -115,7 +117,7 @@ export function TerminalMock({ className }: { className?: string }) {
       <div
         role="tablist"
         aria-label="Workspace panels"
-        className="scroll-slim flex overflow-x-auto border-b border-[var(--app-panel-border)] bg-[var(--app-widget-inner-bg)]"
+        className="scroll-slim flex overflow-x-auto border-b border-[var(--app-panel-border)] bg-[#0b1019]"
       >
         {HERO_TABS.map((item, index) => {
           const selected = index === activeTab;
@@ -167,21 +169,22 @@ export function TerminalMock({ className }: { className?: string }) {
         className="flex-1 px-4 py-4"
       >
         {/* Keyed so switching tabs restarts the animation without a reset effect. */}
-        <Transcript key={tab.id} lines={tab.lines} />
+        <Transcript
+          key={tab.id}
+          lines={tab.lines}
+          label={`Simulated terminal transcript for panel ${tab.label}: ${tab.lines
+            .map((line) => line.text)
+            .join(" ")}`}
+        />
       </div>
 
-      <div className="flex items-center justify-between border-t border-[var(--app-panel-border)] bg-[#0b1019] px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-slate-500">
+      <div className="flex items-center justify-between border-t border-[var(--app-panel-border)] bg-[#0b1019] px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-slate-400">
         <span className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
           workspace ready
         </span>
         <span>{tab.label.replace("0", "")} · simulated session</span>
       </div>
-
-      <p className="sr-only">
-        Simulated terminal preview. Panel {tab.label} shows the following transcript:{" "}
-        {tab.lines.map((line) => line.text).join(" ")}
-      </p>
     </div>
   );
 }

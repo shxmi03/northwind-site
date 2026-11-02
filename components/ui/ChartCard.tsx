@@ -219,8 +219,11 @@ export function ChartCard({ className }: { className?: string }) {
 
       <div
         ref={containerRef}
+        role="img"
+        aria-label={`Illustrative BTC/USD candlestick chart built from synthetic data. Final close ${price.toFixed(
+          2,
+        )} dollars, aggregate change ${signedPct(CHANGE_PCT)}.`}
         className="h-[220px] w-full sm:h-[260px]"
-        aria-hidden="true"
         data-testid="chart-canvas"
       />
 
@@ -231,12 +234,6 @@ export function ChartCard({ className }: { className?: string }) {
         </span>
         <span>Illustrative data</span>
       </div>
-
-      <p className="sr-only">
-        Line chart of illustrative BTC/USD candles, drawn from synthetic data. Final close{" "}
-        {price.toFixed(2)} dollars, aggregate change {signedPct(CHANGE_PCT)}. Win rate 61.3 percent,
-        Sharpe ratio 1.82, maximum drawdown minus 4.1 percent.
-      </p>
     </div>
   );
 }

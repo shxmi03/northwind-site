@@ -63,7 +63,32 @@
   --color-success: #16a34a;
   --color-warning: #d97706;
   --color-error: #dc2626;
-  --color-info: #2563eb;
+  --color-info: #1d4ed8;
+}
+
+/* ---------------------------------------------------------------------------
+   Light-theme contrast floor.
+
+   The palette above is authored dark-first, so the semantic status colours
+   (emerald / rose / amber / sky) were tuned for dark surfaces and fall below
+   WCAG 2.2 AA 4.5:1 on the light ones. These overrides keep every status tone
+   readable in light mode without touching the dark theme. The always-dark
+   terminal mock escapes them by using explicit hex values.
+   --------------------------------------------------------------------------- */
+[data-theme="light"] .text-emerald-400 {
+  color: #047857;
+}
+[data-theme="light"] .text-rose-400 {
+  color: #be123c;
+}
+[data-theme="light"] .text-amber-400 {
+  color: #b45309;
+}
+[data-theme="light"] .text-sky-400 {
+  color: #0369a1;
+}
+[data-theme="light"] .text-blue-300 {
+  color: #1d4ed8;
 }
 
 @theme inline {

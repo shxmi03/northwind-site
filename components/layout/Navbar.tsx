@@ -25,10 +25,41 @@ export function Navbar() {
   useEffect(() => {
     if (!open) return;
 
+    const focusables = () => {
+      const drawer = drawerRef.current;
+      if (!drawer) return [] as HTMLElement[];
+      return Array.from(
+        drawer.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((el) => el.offsetParent !== null);
+    };
+
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setOpen(false);
         toggleRef.current?.focus();
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      /* Keep focus inside the drawer + its toggle while the panel is open. */
+      const items = [toggleRef.current, ...focusables()].filter(
+        (el): el is HTMLButtonElement | HTMLElement => Boolean(el),
+      );
+      if (items.length === 0) return;
+
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      } else if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
       }
     };
     document.addEventListener("keydown", onKeyDown);
@@ -60,7 +91,7 @@ export function Navbar() {
           <Logo />
         </a>
 
-        <ul className="hidden items-center gap-1 md:flex">
+        <ul className="hidden items-center gap-1 lg:flex">
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
               <a
@@ -81,7 +112,7 @@ export function Navbar() {
           >
             Sign in
           </a>
-          <Button href="#pricing" size="sm" className="hidden sm:inline-flex">
+          <Button href="#pricing" size="sm" className="max-sm:hidden">
             Get started
           </Button>
 
@@ -92,7 +123,7 @@ export function Navbar() {
             aria-controls="mobile-nav"
             aria-label={open ? "Close navigation menu" : "Open navigation menu"}
             onClick={() => setOpen((value) => !value)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--tertiary-surface-border)] bg-[var(--tertiary-surface-bg)] text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-info)] md:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--tertiary-surface-border)] bg-[var(--tertiary-surface-bg)] text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-info)] lg:hidden"
           >
             {open ? <X aria-hidden="true" className="h-4 w-4" /> : <Menu aria-hidden="true" className="h-4 w-4" />}
           </button>
@@ -103,7 +134,7 @@ export function Navbar() {
         id="mobile-nav"
         ref={drawerRef}
         hidden={!open}
-        className="border-t border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] px-4 pb-6 pt-3 md:hidden"
+        className="border-t border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] px-4 pb-6 pt-3 lg:hidden"
       >
         <ul className="flex flex-col gap-1">
           {NAV_LINKS.map((link) => (

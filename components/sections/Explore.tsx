@@ -141,7 +141,7 @@ export function Explore() {
                 aria-pressed={active}
                 onClick={() => setFilter(item)}
                 className={cn(
-                  "min-h-[36px] rounded-lg border px-3.5 py-1.5 font-mono text-[11px] transition-colors",
+                  "min-h-[38px] rounded-lg border px-3.5 py-2 font-mono text-[11px] transition-colors",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-info)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--app-canvas)]",
                   active
                     ? "border-[var(--astral-primary)] bg-[var(--astral-primary)] text-white"

@@ -98,7 +98,7 @@ export function CodeMock() {
     <Frame label="editor · strategy.ts" image="/assets/images/feature-2.webp">
       <div className="rounded-lg border border-[var(--app-panel-border)] bg-[#090d16] p-3">
         <div className="mb-2 flex items-center justify-between">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-slate-500">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
             strategy.ts
           </span>
           <span className="inline-flex items-center gap-1 rounded border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-emerald-400">
