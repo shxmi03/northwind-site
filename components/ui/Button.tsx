@@ -19,7 +19,7 @@ const BASE =
 
 const VARIANTS: Record<Variant, string> = {
   rainbow: cn(
-    "overflow-hidden text-white bg-[#0052ff] border border-[var(--astral-blue-700)]",
+    "overflow-hidden text-white bg-[#0052ff] border border-[var(--northwind-blue-700)]",
     "bg-[linear-gradient(#0052ff,#0052ff),linear-gradient(90deg,#ff007a,#7928ca,#0070f3,#00dfd8,#ff007a)]",
     "bg-[length:200%_200%,200%_100%] bg-[position:0_0,0_50%] bg-no-repeat",
     "hover:shadow-[0_0_22px_rgba(0,82,255,0.45)] hover:bg-[position:0_0,200%_50%]",
@@ -31,7 +31,7 @@ const VARIANTS: Record<Variant, string> = {
   ),
   outline: cn(
     "border border-[var(--tertiary-surface-border)] bg-[var(--app-widget-content-bg)]/60 text-[var(--text-primary)]",
-    "hover:border-[var(--astral-primary)]/70 hover:bg-[var(--app-widget-inner-bg)]",
+    "hover:border-[var(--northwind-primary)]/70 hover:bg-[var(--app-widget-inner-bg)]",
   ),
   ghost: cn(
     "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--app-widget-inner-bg)]",

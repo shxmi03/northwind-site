@@ -144,7 +144,7 @@ export function Explore() {
                   "min-h-[38px] rounded-lg border px-3.5 py-2 font-mono text-[11px] transition-colors",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-info)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--app-canvas)]",
                   active
-                    ? "border-[var(--astral-primary)] bg-[var(--astral-primary)] text-white"
+                    ? "border-[var(--northwind-primary)] bg-[var(--northwind-primary)] text-white"
                     : "border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] text-[var(--text-secondary)] hover:border-[var(--color-info)]/60 hover:text-[var(--text-primary)]",
                 )}
               >

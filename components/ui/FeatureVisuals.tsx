@@ -74,7 +74,7 @@ export function ChatMock() {
         </div>
         <div className="flex items-center gap-2 rounded-lg border border-dashed border-[var(--app-panel-border)] px-3 py-2">
           <span className="font-mono text-[11px] text-[var(--text-secondary)]">Ask a follow-up…</span>
-          <span className="ml-auto rounded bg-[var(--astral-primary)] px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-white">
+          <span className="ml-auto rounded bg-[var(--northwind-primary)] px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-white">
             send
           </span>
         </div>
@@ -136,6 +136,9 @@ export function BacktestMock() {
   const points = "0,58 22,52 44,55 66,44 88,47 110,38 132,41 154,30 176,33 198,22 220,25 242,14";
   return (
     <Frame label="backtest · equity curve" image="/assets/images/feature-3.webp">
+      <p className="mb-2 inline-flex items-center rounded border border-[var(--app-panel-border)] bg-[var(--app-widget-inner-bg)] px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--text-secondary)]">
+        illustrative sample
+      </p>
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--text-secondary)]">
@@ -243,7 +246,7 @@ export function AnalyticsMock() {
               key={index}
               className={cn(
                 "w-full rounded-t-sm",
-                index > 4 && index < 8 ? "bg-[var(--astral-primary)]/80" : "bg-[var(--astral-primary)]/30",
+                index > 4 && index < 8 ? "bg-[var(--northwind-primary)]/80" : "bg-[var(--northwind-primary)]/30",
               )}
               style={{ height: `${(height / max) * 56}px` }}
             />

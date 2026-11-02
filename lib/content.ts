@@ -372,15 +372,19 @@ export const STRATEGIES: Strategy[] = [
 /*  Section 7 — Brokers                                                       */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Integration targets, not live partners. No brokerage partnership exists, so
+ * venues are described by category and status only — see reality-check F1.
+ */
 export const BROKERS = [
-  { name: "Interactive Brokers", status: "API", mark: "IB" },
-  { name: "Alpaca Securities", status: "API", mark: "AL" },
-  { name: "Tradier", status: "API", mark: "TR" },
-  { name: "Coinbase", status: "OAuth", mark: "CB" },
-  { name: "Kraken", status: "OAuth", mark: "KR" },
-  { name: "E*TRADE", status: "OAuth", mark: "ET" },
-  { name: "Webull", status: "OAuth", mark: "WB" },
-  { name: "ChoiceTrade", status: "Soon", mark: "CT" },
+  { name: "US equities", status: "Planned", mark: "EQ" },
+  { name: "US options", status: "Planned", mark: "OP" },
+  { name: "Futures", status: "Planned", mark: "FU" },
+  { name: "Crypto spot", status: "Planned", mark: "CS" },
+  { name: "Crypto perpetuals", status: "Planned", mark: "CP" },
+  { name: "Paper trading", status: "Sandbox", mark: "PT" },
+  { name: "Retirement accounts", status: "Planned", mark: "RA" },
+  { name: "Multi-account sync", status: "Planned", mark: "MA" },
 ] as const;
 
 export const BROKER_STEPS = [

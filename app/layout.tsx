@@ -90,7 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex min-h-full flex-col bg-[var(--app-canvas)] font-sans text-[var(--text-primary)]">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-[var(--astral-primary)] focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:text-white"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-[var(--northwind-primary)] focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:text-white"
         >
           Skip to content
         </a>

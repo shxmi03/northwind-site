@@ -15,7 +15,7 @@ export function Brokers() {
         <SectionHeading
           eyebrow="Broker integration"
           title={<span id="brokers-heading">Connect your brokerage accounts.</span>}
-          description="Link supported brokerage credentials to stream balances, inspect positions, and stage authorized trades."
+          description="Link credentials to stream balances, inspect positions, and stage authorized trades. Venue categories below are integration targets, not live connections."
         />
 
         <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -36,12 +36,12 @@ export function Brokers() {
               <span
                 className={cn(
                   "rounded px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em]",
-                  broker.status === "Soon"
-                    ? "border border-[var(--app-panel-border)] text-[var(--text-secondary)]"
-                    : "border border-emerald-500/25 bg-emerald-500/10 text-emerald-400",
+                  broker.status === "Sandbox"
+                    ? "border border-[var(--color-info)]/30 bg-[var(--color-info)]/10 text-[var(--color-info)]"
+                    : "border border-[var(--app-panel-border)] text-[var(--text-secondary)]",
                 )}
               >
-                {broker.status === "Soon" ? "coming soon" : broker.status}
+                {broker.status.toLowerCase()}
               </span>
             </li>
           ))}
@@ -83,7 +83,7 @@ export function Brokers() {
         </ol>
 
         <p className="mt-8 text-center font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--text-secondary)]">
-          Brokerage names shown as integration targets only · no partnership implied
+          Venue categories shown as integration targets only · no broker partnership implied
         </p>
       </div>
     </section>
