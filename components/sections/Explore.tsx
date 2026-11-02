@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { ArrowUpRight, GitFork } from "lucide-react";
 import { STRATEGIES, STRATEGY_FILTERS, type Strategy } from "@/lib/content";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Reveal } from "@/components/motion/Reveal";
 import { cn } from "@/lib/utils";
 
 function Sparkline({ values }: { values: number[] }) {
@@ -25,9 +26,13 @@ function Sparkline({ values }: { values: number[] }) {
   );
 }
 
-function StrategyCard({ strategy }: { strategy: Strategy }) {
+function StrategyCard({ strategy, index = 0 }: { strategy: Strategy; index?: number }) {
   return (
-    <article className="flex flex-col justify-between rounded-xl border border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] p-5 transition-colors hover:border-[var(--color-info)]/40">
+    <Reveal
+      as="article"
+      delay={(index % 3) * 70}
+      className="micro-lift flex flex-col justify-between rounded-xl border border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] p-5 hover:border-[var(--color-info)]/40 hover:shadow-[0_8px_30px_rgba(0,0,0,0.35)]"
+    >
       <div>
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -102,7 +107,7 @@ function StrategyCard({ strategy }: { strategy: Strategy }) {
           </a>
         </div>
       </div>
-    </article>
+    </Reveal>
   );
 }
 
@@ -159,8 +164,8 @@ export function Explore() {
         </p>
 
         <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {visible.map((strategy) => (
-            <StrategyCard key={strategy.name} strategy={strategy} />
+          {visible.map((strategy, index) => (
+            <StrategyCard key={strategy.name} strategy={strategy} index={index} />
           ))}
         </div>
 

@@ -2,6 +2,7 @@ import { ArrowRight, Lock, ShieldCheck } from "lucide-react";
 import { BROKERS, BROKER_STEPS } from "@/lib/content";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
+import { Reveal } from "@/components/motion/Reveal";
 import { cn } from "@/lib/utils";
 
 export function Brokers() {
@@ -19,10 +20,12 @@ export function Brokers() {
         />
 
         <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {BROKERS.map((broker) => (
-            <li
+          {BROKERS.map((broker, index) => (
+            <Reveal
+              as="li"
               key={broker.name}
-              className="flex flex-col items-start gap-2 rounded-xl border border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] p-4 transition-colors hover:border-[var(--color-info)]/40"
+              delay={(index % 4) * 60}
+              className="micro-lift flex flex-col items-start gap-2 rounded-xl border border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] p-4 hover:border-[var(--color-info)]/40"
             >
               <span
                 aria-hidden="true"
@@ -43,7 +46,7 @@ export function Brokers() {
               >
                 {broker.status.toLowerCase()}
               </span>
-            </li>
+            </Reveal>
           ))}
         </ul>
 
@@ -67,10 +70,12 @@ export function Brokers() {
         </div>
 
         <ol className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {BROKER_STEPS.map((step) => (
-            <li
+          {BROKER_STEPS.map((step, index) => (
+            <Reveal
+              as="li"
               key={step.step}
-              className="rounded-xl border border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] p-4"
+              delay={index * 70}
+              className="micro-lift rounded-xl border border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] p-4"
             >
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[11px] text-[var(--color-info)]">{step.step}</span>
@@ -78,7 +83,7 @@ export function Brokers() {
               </div>
               <h3 className="mt-2 text-sm font-semibold text-[var(--text-primary)]">{step.title}</h3>
               <p className="mt-1 text-[13px] leading-relaxed text-[var(--text-secondary)]">{step.body}</p>
-            </li>
+            </Reveal>
           ))}
         </ol>
 

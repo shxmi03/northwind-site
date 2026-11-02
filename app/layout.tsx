@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { BRAND } from "@/lib/brand";
 import { ThemeProvider, THEME_INIT_SCRIPT } from "@/components/theme/ThemeProvider";
+import { MotionController } from "@/components/motion/MotionController";
 import { asset } from "@/lib/utils";
 
 const geistSans = Geist({
@@ -86,6 +87,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        {/* No-JS safety net: if scripts never run, scroll-reveal blocks must not
+            stay at opacity 0. The reveal styles are already gated behind
+            @media (scripting: enabled); this covers older engines. */}
+        <noscript>
+          <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
       </head>
       <body className="flex min-h-full flex-col bg-[var(--app-canvas)] font-sans text-[var(--text-primary)]">
         <a
@@ -94,6 +101,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
+        {/* One shared motion controller for scroll reveals + hero parallax. */}
+        <MotionController />
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

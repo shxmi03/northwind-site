@@ -108,7 +108,15 @@ export function McpExplainer() {
           aria-labelledby={TAB_ID(stage.id)}
           className="px-4 py-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-info)] sm:px-6 sm:py-7"
         >
-          <div className="space-y-4">
+          {/* Announce stage changes to screen readers (aria-live) — the visual
+              swap alone is not perceivable for non-sighted users. */}
+          <p aria-live="polite" aria-atomic="true" className="sr-only">
+            Stage {active + 1} of {MCP_STAGES.length}: {stage.label}. {stage.answer}
+          </p>
+
+          {/* key={stage.id} remounts the thread so the .stage-swap entrance
+              animation replays on every tab change (Fable 5.1 transition). */}
+          <div key={stage.id} className="stage-swap space-y-4">
             {/* user prompt */}
             <div className="flex justify-end">
               <div className="max-w-[92%] rounded-2xl rounded-br-sm border border-[var(--app-panel-border)] bg-[var(--app-widget-inner-bg)] px-4 py-3 sm:max-w-[75%]">

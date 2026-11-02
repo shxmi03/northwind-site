@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { BRAND } from "@/lib/brand";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Badge";
+import { Reveal } from "@/components/motion/Reveal";
 
 export function FinalCta() {
   return (
@@ -10,7 +11,7 @@ export function FinalCta() {
       aria-labelledby="final-cta-heading"
       className="scroll-mt-24 px-4 py-16 sm:px-6 sm:py-20 lg:px-8"
     >
-      <div className="relative mx-auto w-full max-w-5xl overflow-hidden rounded-2xl border border-[var(--color-info)]/30 bg-gradient-to-r from-[var(--color-info)]/15 via-[var(--app-widget-content-bg)] to-[#7928ca]/15 p-8 text-center sm:p-12">
+      <Reveal className="relative mx-auto w-full max-w-5xl overflow-hidden rounded-2xl border border-[var(--color-info)]/30 bg-gradient-to-r from-[var(--color-info)]/15 via-[var(--app-widget-content-bg)] to-[#7928ca]/15 p-8 text-center sm:p-12">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_80%_at_50%_120%,rgba(0,82,255,0.25),transparent_70%)]"
@@ -36,7 +37,7 @@ export function FinalCta() {
             </p>
           </div>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

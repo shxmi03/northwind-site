@@ -195,7 +195,7 @@ export function Navbar() {
               ref={resourcesPanelRef}
               hidden={!resourcesOpen}
               aria-label="Resources"
-              className="absolute left-1/2 top-full z-50 mt-2 w-56 -translate-x-1/2 rounded-xl border border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] p-1.5 shadow-2xl shadow-black/40"
+              className="dropdown-panel absolute left-1/2 top-full z-50 mt-2 w-56 -translate-x-1/2 rounded-xl border border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] p-1.5 shadow-2xl shadow-black/40"
             >
               {NAV_RESOURCES.map((link) => (
                 <li key={link.label}>

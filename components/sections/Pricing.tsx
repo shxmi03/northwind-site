@@ -4,6 +4,7 @@ import { PRICING_BULLETS } from "@/lib/content";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { Reveal } from "@/components/motion/Reveal";
 
 /**
  * Single-plan pricing. The checkout target is a placeholder until the Stripe
@@ -31,7 +32,7 @@ export function Pricing() {
           description="Access market research, backtesting engines, strategy builders, and broker connection tools under a single subscription."
         />
 
-        <div className="mx-auto mt-10 max-w-xl overflow-hidden rounded-2xl border border-[var(--color-info)]/35 bg-[var(--app-widget-content-bg)] p-6 shadow-2xl shadow-black/40 sm:p-9">
+        <Reveal className="mx-auto mt-10 max-w-xl overflow-hidden rounded-2xl border border-[var(--color-info)]/35 bg-[var(--app-widget-content-bg)] p-6 shadow-2xl shadow-black/40 sm:p-9">
           <div className="flex items-center justify-between">
             <Badge tone="brand">One complete plan</Badge>
             <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--text-secondary)]">
@@ -56,7 +57,7 @@ export function Pricing() {
             Billed monthly after the first month. Cancel from the account dashboard at any time.
           </p>
 
-          <Button href={CHECKOUT_HREF} size="lg" className="mt-6 w-full justify-center">
+          <Button href={CHECKOUT_HREF} size="lg" className="micro-sheen mt-6 w-full justify-center">
             Get started — {BRAND.planPriceInitial} first month
             <ArrowRight aria-hidden="true" className="h-4 w-4" />
           </Button>
@@ -75,7 +76,7 @@ export function Pricing() {
           <p className="mt-6 border-t border-[var(--app-panel-border)] pt-4 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--text-secondary)]">
             Placeholder pricing · no payment is collected from this preview
           </p>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

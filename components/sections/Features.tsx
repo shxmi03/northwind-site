@@ -3,6 +3,7 @@ import { FEATURES } from "@/lib/content";
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { FEATURE_VISUALS } from "@/components/ui/FeatureVisuals";
+import { Reveal } from "@/components/motion/Reveal";
 import { cn } from "@/lib/utils";
 
 export function Features() {
@@ -26,7 +27,8 @@ export function Features() {
             const Icon = feature.icon;
 
             return (
-              <li
+              <Reveal
+                as="li"
                 key={feature.index}
                 className="grid grid-cols-1 items-center gap-8 py-4 sm:py-6 lg:grid-cols-2 lg:gap-14"
               >
@@ -50,7 +52,7 @@ export function Features() {
                 <div className={cn(reversed && "lg:order-1")}>
                   <Visual />
                 </div>
-              </li>
+              </Reveal>
             );
           })}
         </ol>

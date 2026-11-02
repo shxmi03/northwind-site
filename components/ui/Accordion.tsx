@@ -69,7 +69,7 @@ export function Accordion({
               role="region"
               aria-labelledby={triggerId}
               hidden={!isOpen}
-              className="px-5 pb-6 pt-0 sm:px-6"
+              className={cn("px-5 pb-6 pt-0 sm:px-6", isOpen && "panel-reveal")}
             >
               <p className="border-t border-[var(--app-panel-border)] pt-4 pl-8 text-sm leading-relaxed text-[var(--text-secondary)]">
                 {item.answer}

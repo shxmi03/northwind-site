@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Eyebrow } from "@/components/ui/Badge";
+import { Reveal } from "@/components/motion/Reveal";
 
 export function SectionHeading({
   eyebrow,
@@ -18,7 +19,7 @@ export function SectionHeading({
   children?: ReactNode;
 }) {
   return (
-    <div
+    <Reveal
       className={cn(
         "flex flex-col gap-4",
         align === "center" ? "items-center text-center" : "items-start text-left",
@@ -35,7 +36,7 @@ export function SectionHeading({
         </p>
       ) : null}
       {children}
-    </div>
+    </Reveal>
   );
 }
 

@@ -4,6 +4,7 @@ import { MCP_CLIENTS } from "@/lib/content";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { McpExplainer } from "@/components/sections/McpExplainer";
+import { Reveal } from "@/components/motion/Reveal";
 
 /**
  * Three bands, mirroring the reference's treatment of MCP as the product
@@ -33,7 +34,7 @@ export function McpSection() {
           description="One standardized MCP endpoint turns a chat request into a market-data query, a strategy build, a backtest, a staged order, or a monitoring rule — and returns the result inside the same conversation."
         />
 
-        <div className="mx-auto mt-10 flex max-w-3xl flex-col items-stretch gap-3 rounded-xl border border-[var(--app-panel-border)] bg-[#090d16] p-3 sm:flex-row sm:items-center">
+        <Reveal className="mx-auto mt-10 flex max-w-3xl flex-col items-stretch gap-3 rounded-xl border border-[var(--app-panel-border)] bg-[#090d16] p-3 sm:flex-row sm:items-center">
           <span className="flex items-center gap-2 px-2 font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400">
             <Plug aria-hidden="true" className="h-3.5 w-3.5 text-[var(--color-info)]" />
             endpoint
@@ -45,7 +46,7 @@ export function McpSection() {
             <Copy aria-hidden="true" className="h-3 w-3" />
             streamable http
           </span>
-        </div>
+        </Reveal>
 
         <p className="mt-4 text-center font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--text-secondary)]">
           nine tools · five stages · one endpoint
@@ -59,13 +60,16 @@ export function McpSection() {
             connects to the AI client you already work in
           </p>
           <ul className="mt-4 flex flex-wrap items-center justify-center gap-2" aria-label="Compatible AI clients">
-            {MCP_CLIENTS.map((client) => (
-              <li
+            {MCP_CLIENTS.map((client, index) => (
+              <Reveal
+                as="li"
                 key={client}
+                delay={index * 50}
+                y={12}
                 className="rounded-full border border-[var(--app-panel-border)] bg-[var(--app-widget-content-bg)] px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--text-secondary)]"
               >
                 {client}
-              </li>
+              </Reveal>
             ))}
           </ul>
         </div>
@@ -73,7 +77,9 @@ export function McpSection() {
 
       {/* Band 3 — stage-driven chat explainer */}
       <div className="relative mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
-        <McpExplainer />
+        <Reveal>
+          <McpExplainer />
+        </Reveal>
 
         <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Button href="#pricing" size="md" className="w-full justify-center sm:w-auto">
