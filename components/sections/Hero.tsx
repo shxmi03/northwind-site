@@ -55,7 +55,7 @@ export function Hero() {
             </Button>
           </div>
 
-          <p className="mt-4 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--text-secondary)]">
+          <p className="mt-4 flex items-center justify-center gap-2 text-center font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--text-secondary)]">
             <ShieldCheck aria-hidden="true" className="h-3.5 w-3.5 text-emerald-400" />
             No credit card required for workspace exploration · Setup takes 2 minutes
           </p>
