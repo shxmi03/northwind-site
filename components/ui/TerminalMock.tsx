@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { HERO_TABS } from "@/lib/content";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { HERO_TABS, type HeroTab } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
 const KIND_STYLES: Record<string, string> = {
@@ -20,66 +20,90 @@ const PROMPT_PREFIX: Record<string, string> = {
   meta: "·",
 };
 
-export function TerminalMock({ className }: { className?: string }) {
-  const [activeTab, setActiveTab] = useState(0);
-  const [visibleLines, setVisibleLines] = useState<number>(0);
-  const [typed, setTyped] = useState("");
+const MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+function subscribeMotion(onChange: () => void) {
+  const query = window.matchMedia(MOTION_QUERY);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
+function useReducedMotion(): boolean {
+  return useSyncExternalStore(
+    subscribeMotion,
+    () => window.matchMedia(MOTION_QUERY).matches,
+    () => false,
+  );
+}
+
+/** Typewriter for the prompt, then one output line every 380 ms. */
+function Transcript({ lines }: { lines: HeroTab["lines"] }) {
+  const reduced = useReducedMotion();
+  const [typedCount, setTypedCount] = useState(0);
+  const [revealed, setRevealed] = useState(0);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const tab = HERO_TABS[activeTab];
-  const lines = useMemo(() => tab.lines, [tab]);
-  const reducedMotion = useReducedMotion();
+  const prompt = lines[0]?.text ?? "";
 
-  /* Reset the animation whenever the tab changes. */
   useEffect(() => {
-    setVisibleLines(reducedMotion ? lines.length : 0);
-    setTyped(reducedMotion ? lines[0]?.text ?? "" : "");
-  }, [lines, reducedMotion]);
-
-  /* Typewriter for the first prompt line, then reveal the rest progressively. */
-  useEffect(() => {
-    if (reducedMotion) return;
-    const first = lines[0];
-    if (!first) return;
-
-    let charIndex = 0;
-    let cancelled = false;
-
-    const typeTimer = window.setInterval(() => {
-      if (cancelled) return;
-      charIndex += 2;
-      setTyped(first.text.slice(0, charIndex));
-      if (charIndex >= first.text.length) {
-        window.clearInterval(typeTimer);
-      }
+    if (reduced) return;
+    let index = 0;
+    const timer = window.setInterval(() => {
+      index += 2;
+      setTypedCount(index);
+      if (index >= prompt.length) window.clearInterval(timer);
     }, 18);
-
-    return () => {
-      cancelled = true;
-      window.clearInterval(typeTimer);
-    };
-  }, [lines, reducedMotion]);
+    return () => window.clearInterval(timer);
+  }, [prompt, reduced]);
 
   useEffect(() => {
-    if (reducedMotion) return;
-    if (!lines.length) return;
-    if (typed.length < lines[0].text.length) return;
+    if (reduced || typedCount < prompt.length || revealed >= lines.length - 1) return;
+    const timer = window.setTimeout(() => setRevealed((count) => count + 1), 380);
+    return () => window.clearTimeout(timer);
+  }, [reduced, typedCount, prompt.length, revealed, lines.length]);
 
-    let index = 1;
-    const reveal = window.setInterval(() => {
-      index += 1;
-      setVisibleLines(Math.min(index, lines.length));
-      if (index >= lines.length) window.clearInterval(reveal);
-    }, 520);
-
-    return () => window.clearInterval(reveal);
-  }, [typed, lines, reducedMotion]);
-
-  /* Keep the newest line in view. */
   useEffect(() => {
-    const el = panelRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  }, [visibleLines, typed]);
+    const panel = panelRef.current;
+    if (panel) panel.scrollTop = panel.scrollHeight;
+  }, [typedCount, revealed]);
+
+  const shownPrompt = reduced ? prompt : prompt.slice(0, typedCount);
+  const visible = reduced ? lines.length : 1 + revealed;
+
+  return (
+    <div
+      ref={panelRef}
+      className="scroll-slim h-[188px] overflow-y-auto font-mono text-[11px] leading-relaxed sm:text-xs"
+    >
+      {lines.slice(0, visible).map((line, index) => {
+        const isPrompt = index === 0;
+        return (
+          <p
+            key={index}
+            className={cn("flex gap-2 whitespace-pre-wrap", KIND_STYLES[line.kind])}
+          >
+            <span aria-hidden="true" className="select-none text-slate-600">
+              {PROMPT_PREFIX[line.kind]}
+            </span>
+            <span>{isPrompt ? shownPrompt : line.text}</span>
+            {isPrompt && shownPrompt.length < prompt.length ? (
+              <span aria-hidden="true" className="inline-block w-[7px] bg-slate-300 motion-safe:animate-blink" />
+            ) : null}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
+export function TerminalMock({ className }: { className?: string }) {
+  const [activeTab, setActiveTab] = useState(0);
+  const tab = HERO_TABS[activeTab];
+
+  const focusTab = (index: number) => {
+    setActiveTab(index);
+    document.getElementById(`hero-tab-${HERO_TABS[index].id}`)?.focus();
+  };
 
   return (
     <div
@@ -88,11 +112,10 @@ export function TerminalMock({ className }: { className?: string }) {
         className,
       )}
     >
-      {/* Tabs */}
       <div
         role="tablist"
         aria-label="Workspace panels"
-        className="flex overflow-x-auto border-b border-[var(--app-panel-border)] bg-[var(--app-widget-inner-bg)] scroll-slim"
+        className="scroll-slim flex overflow-x-auto border-b border-[var(--app-panel-border)] bg-[var(--app-widget-inner-bg)]"
       >
         {HERO_TABS.map((item, index) => {
           const selected = index === activeTab;
@@ -108,15 +131,19 @@ export function TerminalMock({ className }: { className?: string }) {
               onKeyDown={(event) => {
                 if (event.key === "ArrowRight") {
                   event.preventDefault();
-                  const next = (index + 1) % HERO_TABS.length;
-                  setActiveTab(next);
-                  document.getElementById(`hero-tab-${HERO_TABS[next].id}`)?.focus();
+                  focusTab((index + 1) % HERO_TABS.length);
                 }
                 if (event.key === "ArrowLeft") {
                   event.preventDefault();
-                  const prev = (index - 1 + HERO_TABS.length) % HERO_TABS.length;
-                  setActiveTab(prev);
-                  document.getElementById(`hero-tab-${HERO_TABS[prev].id}`)?.focus();
+                  focusTab((index - 1 + HERO_TABS.length) % HERO_TABS.length);
+                }
+                if (event.key === "Home") {
+                  event.preventDefault();
+                  focusTab(0);
+                }
+                if (event.key === "End") {
+                  event.preventDefault();
+                  focusTab(HERO_TABS.length - 1);
                 }
               }}
               className={cn(
@@ -133,39 +160,16 @@ export function TerminalMock({ className }: { className?: string }) {
         })}
       </div>
 
-      {/* Terminal body */}
       <div
         id="hero-tabpanel"
         role="tabpanel"
         aria-labelledby={`hero-tab-${tab.id}`}
         className="flex-1 px-4 py-4"
       >
-        <div
-          ref={panelRef}
-          className="scroll-slim h-[188px] overflow-y-auto font-mono text-[11px] leading-relaxed sm:text-xs"
-        >
-          {lines.map((line, index) => {
-            const isFirst = index === 0;
-            const shown = isFirst ? typed.length > 0 : index <= visibleLines;
-            if (!shown) return null;
-            const text = isFirst ? typed : line.text;
-
-            return (
-              <p key={`${tab.id}-${index}`} className={cn("flex gap-2 whitespace-pre-wrap", KIND_STYLES[line.kind])}>
-                <span aria-hidden="true" className="select-none text-slate-600">
-                  {PROMPT_PREFIX[line.kind]}
-                </span>
-                <span>{text}</span>
-                {isFirst && typed.length < line.text.length ? (
-                  <span aria-hidden="true" className="inline-block w-[7px] bg-slate-300 motion-safe:animate-blink" />
-                ) : null}
-              </p>
-            );
-          })}
-        </div>
+        {/* Keyed so switching tabs restarts the animation without a reset effect. */}
+        <Transcript key={tab.id} lines={tab.lines} />
       </div>
 
-      {/* Status line */}
       <div className="flex items-center justify-between border-t border-[var(--app-panel-border)] bg-[#0b1019] px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-slate-500">
         <span className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
@@ -176,25 +180,10 @@ export function TerminalMock({ className }: { className?: string }) {
 
       <p className="sr-only">
         Simulated terminal preview. Panel {tab.label} shows the following transcript:{" "}
-        {lines.map((line) => line.text).join(" ")}
+        {tab.lines.map((line) => line.text).join(" ")}
       </p>
     </div>
   );
-}
-
-/** Tracks prefers-reduced-motion without layout shift. */
-function useReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(query.matches);
-    const handler = (event: MediaQueryListEvent) => setReduced(event.matches);
-    query.addEventListener("change", handler);
-    return () => query.removeEventListener("change", handler);
-  }, []);
-
-  return reduced;
 }
 
 export default TerminalMock;

@@ -78,9 +78,15 @@ export function Button(props: ButtonAsButton | ButtonAsLink) {
     );
   }
 
-  const { variant: _v, size: _s, className: _c, children: _ch, ...rest } = props as ButtonAsButton;
+  /* Forward any remaining native button props (onClick, disabled, aria-*) without
+     destructuring names we would never read. */
+  const rest = { ...props } as Record<string, unknown>;
+  for (const key of ["href", "external", "variant", "size", "className", "children"]) {
+    delete rest[key];
+  }
+
   return (
-    <button type="button" {...rest} className={classes}>
+    <button type="button" {...(rest as ComponentPropsWithoutRef<"button">)} className={classes}>
       {content(children, variant)}
     </button>
   );
